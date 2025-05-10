@@ -11,95 +11,118 @@ cars_list = [
 
 rental_cars = []
 
+def clear_screen():
+    os.system("cls" if os.name == "nt" else "clear")
+
 def print_cars(list_cars):
     print("")
     for i, car in enumerate(list_cars):
         print(f"{i} | {car[0]} - R${car[1]}")
 
 def get_out():
-    os.system("cls")
+    clear_screen()
     print("Obrigado por utilizar a locadora!")
     time.sleep(2)
     sys.exit()
-    
+
+def pause():
+    input("\nPressione ENTER para continuar...")
+
+def get_valid_option(prompt, min_val, max_val):
+    while True:
+        try:
+            op = int(input(prompt))
+            if op < min_val or op > max_val:
+                print("Opção inválida! Tente novamente.")
+                continue
+            return op
+        except ValueError:
+            print("Por favor, digite um número válido.")
+
 welcome = 0
 
 while True:
-    os.system("cls")
+    clear_screen()
 
     if welcome == 0:
-        print("Bem-vindo à Locadora de Carros")
+        print("🚗 Bem-vindo à Locadora de Carros 🚗")
         print("")
+        pause()
+        welcome = 1
     
-    print("1 - Mostrar portifólio | 2 - Alugar um carro | 3 - Devolver um carro | 4 - Sair")
+    print("1 - Mostrar portifólio")
+    print("2 - Alugar um carro")
+    print("3 - Devolver um carro")
+    print("4 - Sair")
     print("")
-    op = int(input("Escolha: "))
+    
+    op = get_valid_option("Escolha: ", 1, 4)
 
     if op == 1:
-        os.system("cls")
-        print("Carros de nosso portifólio:")
+        clear_screen()
+        print("📋 Carros de nosso portifólio:")
         print_cars(cars_list + rental_cars)
+        pause()
     
     elif op == 2:
-        os.system("cls")
+        clear_screen()
 
-        if len(cars_list) != 0:
-            print("Carros disponíveis:")
+        if cars_list:
+            print("🚘 Carros disponíveis:")
             print_cars(cars_list)
 
             print("")
-            code = int(input("Digite o código do carro escolhido: "))
-            days = int(input("Digite a quantidades de dias que ficará com o carro: "))
+            code = get_valid_option("Digite o código do carro escolhido: ", 0, len(cars_list)-1)
+            days = get_valid_option("Digite a quantidade de dias que ficará com o carro: ", 1, 365)
 
-            os.system("cls")
-            print(f"Você escolheu o {cars_list[code][0]} por {days} dias, totalizando R${(cars_list[code][1])*days}. Deseja alugar?")
-            print("")
-            print("1 - Sim | 2 - Não")
-            print("")
-            op = int(input("Escolha: "))
+            clear_screen()
+            total = cars_list[code][1] * days
+            print(f"Você escolheu o {cars_list[code][0]} por {days} dias, totalizando R${total}. Deseja alugar?")
+            print("\n1 - Sim | 2 - Não\n")
+            confirm = get_valid_option("Escolha: ", 1, 2)
 
-            if op == 1:
+            if confirm == 1:
                 rental_cars.append(cars_list.pop(code))
-                os.system("cls")
-                print("Carro alugado!")
-                
+                clear_screen()
+                print("✅ Carro alugado com sucesso!")
             else:
-                os.system("cls")
+                print("Aluguel cancelado.")
         else:
-            print("Nenhum carro disponível!")
+            print("❌ Nenhum carro disponível para alugar!")
+        pause()
 
     elif op == 3:
-        os.system("cls")
+        clear_screen()
 
-        if len(rental_cars) != 0:
-            print("Carros para devolução:")
+        if rental_cars:
+            print("🔁 Carros para devolução:")
             print_cars(rental_cars)
 
             print("")
-            code = int(input("Digite o código do carro que deseja devolver: "))
+            code = get_valid_option("Digite o código do carro que deseja devolver: ", 0, len(rental_cars)-1)
 
-            os.system("cls")
+            clear_screen()
             print(f"Devolver {rental_cars[code][0]}?")
-            print("")
-            print("1 - Sim | 2 - Não")
-            print("")
-            op = int(input("Escolha: "))
+            print("\n1 - Sim | 2 - Não\n")
+            confirm = get_valid_option("Escolha: ", 1, 2)
 
-            if op == 1:
+            if confirm == 1:
                 cars_list.append(rental_cars.pop(code))
-                os.system("cls")
-                print("Carro devolvido!")
-
+                clear_screen()
+                print("✅ Carro devolvido com sucesso!")
+            else:
+                print("Devolução cancelada.")
         else:
-            print("Nenhum carro foi alugado!")
+            print("❌ Nenhum carro foi alugado!")
+        pause()
 
-    if op == 4:
+    elif op == 4:
         get_out()
-    
-    print("")
-    print("1 - Continuar para o Menu | 2 - Sair")
-    print("")
-    op = int(input("Escolha: "))
+
+    clear_screen()
+    print("Deseja continuar no menu principal?")
+    print("\n1 - Sim | 2 - Sair\n")
+    op = get_valid_option("Escolha: ", 1, 2)
 
     if op == 2:
         get_out()
